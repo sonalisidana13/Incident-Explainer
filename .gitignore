@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+
+# Env
+.env
+
+# Gradle/Java
+.gradle/
+build/
+**/build/
+
+# Node (web app scaffold if present)
+node_modules/
+
+# Logs
+*.log

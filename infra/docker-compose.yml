@@ -1,0 +1,21 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: incident-explainer-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: incident_explainer
+      POSTGRES_USER: incident_explainer
+      POSTGRES_PASSWORD: incident_explainer
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U incident_explainer -d incident_explainer"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  pgdata:
