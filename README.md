@@ -50,3 +50,17 @@ Optional input path override:
 ```bash
 KB_ROOT=/absolute/path/to/data/knowledge_base gradle :apps:api:ingestKnowledgeBase
 ```
+
+## Debug KB Retrieval
+Vector search endpoint (pgvector cosine distance) using the same 384-dim deterministic embedding
+function used by ingestion:
+
+```bash
+curl "http://localhost:8080/kb/search?q=database%20pool%20timeouts&k=5"
+```
+
+Optional filters:
+
+```bash
+curl "http://localhost:8080/kb/search?q=consumer%20lag&k=5&kind=runbooks&service=notification-service"
+```
