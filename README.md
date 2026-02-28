@@ -94,3 +94,26 @@ curl -X POST "http://localhost:8080/incident/explain" \
     ]
   }'
 ```
+
+### Post Sample Incident Packs
+Sample request payloads are available under `data/incidents`.
+
+Post one sample:
+
+```bash
+curl -X POST "http://localhost:8080/incident/explain" \
+  -H "Content-Type: application/json" \
+  --data @data/incidents/incident-db-pool-exhaustion.json
+```
+
+Post all samples:
+
+```bash
+for f in data/incidents/*.json; do
+  echo "==> $f"
+  curl -s -X POST "http://localhost:8080/incident/explain" \
+    -H "Content-Type: application/json" \
+    --data @"$f"
+  echo
+done
+```

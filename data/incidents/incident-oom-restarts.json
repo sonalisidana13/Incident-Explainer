@@ -1,0 +1,28 @@
+{
+  "alert": {
+    "name": "OOM restart storm on search-service",
+    "service": "search-service",
+    "env": "prod",
+    "startTime": "2026-02-28T04:10:00Z",
+    "endTime": "2026-02-28T04:35:00Z",
+    "description": "Pods are repeatedly restarting with OOMKilled and query latency is unstable"
+  },
+  "logs": [
+    "2026-02-28T04:11:12Z ERROR search-service java.lang.OutOfMemoryError: Java heap space",
+    "2026-02-28T04:11:36Z WARN kubelet Container search-api was OOMKilled",
+    "2026-02-28T04:12:04Z WARN search-service pod restart count increased to 9 in 20m",
+    "2026-02-28T04:12:58Z ERROR search-service GET /search returned 500 due to backend unavailable"
+  ],
+  "metrics": {
+    "restart_count_20m": "9",
+    "memory_working_set_mb": "1880",
+    "memory_limit_mb": "1900",
+    "p95_latency_ms": "1450"
+  },
+  "deploys": [
+    {
+      "version": "search-service-3.2.0",
+      "time": "2026-02-28T03:58:00Z"
+    }
+  ]
+}

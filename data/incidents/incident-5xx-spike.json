@@ -1,0 +1,27 @@
+{
+  "alert": {
+    "name": "API edge 5xx spike",
+    "service": "auth-service",
+    "env": "prod",
+    "startTime": "2026-02-28T05:00:00Z",
+    "endTime": "2026-02-28T05:12:00Z",
+    "description": "Auth login and token refresh endpoints are returning elevated 5xx"
+  },
+  "logs": [
+    "2026-02-28T05:01:01Z ERROR api-gateway upstream auth-service returned 503 route=/auth/login",
+    "2026-02-28T05:01:33Z ERROR auth-service POST /auth/refresh returned 500 internal server error",
+    "2026-02-28T05:02:12Z WARN api-gateway 5xx rate exceeded 8.7% in us-east-1",
+    "2026-02-28T05:02:56Z INFO deploy-controller release auth-service-1.18.5 at 2026-02-28T04:56:00Z"
+  ],
+  "metrics": {
+    "http_5xx_rate": "0.087",
+    "requests_per_sec": "1420",
+    "p95_latency_ms": "980"
+  },
+  "deploys": [
+    {
+      "version": "auth-service-1.18.5",
+      "time": "2026-02-28T04:56:00Z"
+    }
+  ]
+}

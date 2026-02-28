@@ -1,0 +1,27 @@
+{
+  "alert": {
+    "name": "Kafka consumer lag high on notification-service",
+    "service": "notification-service",
+    "env": "prod",
+    "startTime": "2026-02-28T03:00:00Z",
+    "endTime": "2026-02-28T03:20:00Z",
+    "description": "Notification pipeline lag is growing and OTP messages are delayed"
+  },
+  "logs": [
+    "2026-02-28T03:01:09Z WARN notification-worker consumer lag exceeded threshold topic=notifications lag=184230",
+    "2026-02-28T03:01:45Z WARN notification-worker rebalance in progress group=notification-workers",
+    "2026-02-28T03:02:31Z ERROR notification-worker failed to process event, retrying attempt=6 eventType=otp_send",
+    "2026-02-28T03:03:10Z INFO notification-worker dlq write enabled for malformed payload signature"
+  ],
+  "metrics": {
+    "consumer_lag": "184230",
+    "lag_growth_per_min": "12650",
+    "event_to_send_p95_seconds": "1120"
+  },
+  "deploys": [
+    {
+      "version": "notification-service-2.7.1",
+      "time": "2026-02-28T02:42:00Z"
+    }
+  ]
+}

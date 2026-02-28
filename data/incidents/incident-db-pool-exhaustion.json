@@ -1,0 +1,28 @@
+{
+  "alert": {
+    "name": "DB pool exhaustion on auth-service",
+    "service": "auth-service",
+    "env": "prod",
+    "startTime": "2026-02-28T02:10:00Z",
+    "endTime": "2026-02-28T02:25:00Z",
+    "description": "Login failures increasing with connection pool timeout errors"
+  },
+  "logs": [
+    "2026-02-28T02:11:04Z ERROR auth-service Connection is not available, request timed out after 3000ms",
+    "2026-02-28T02:11:20Z WARN auth-service Timeout waiting for idle object in db pool",
+    "2026-02-28T02:12:02Z ERROR auth-service POST /auth/login returned 503",
+    "2026-02-28T02:12:49Z INFO auth-service hikari active=50 idle=0 pending=37"
+  ],
+  "metrics": {
+    "error_rate": "0.118",
+    "p95_latency_ms": "2150",
+    "db_pool_active": "50",
+    "db_pool_max": "50"
+  },
+  "deploys": [
+    {
+      "version": "auth-service-1.18.4",
+      "time": "2026-02-28T02:05:00Z"
+    }
+  ]
+}

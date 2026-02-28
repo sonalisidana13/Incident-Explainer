@@ -1,0 +1,27 @@
+{
+  "alert": {
+    "name": "Checkout p95 latency breach",
+    "service": "checkout-service",
+    "env": "prod",
+    "startTime": "2026-02-28T06:20:00Z",
+    "endTime": "2026-02-28T06:45:00Z",
+    "description": "Checkout API p95 exceeded SLO and timeout volume is increasing"
+  },
+  "logs": [
+    "2026-02-28T06:21:05Z WARN checkout-service p95 latency is 2840ms route=/checkout/submit",
+    "2026-02-28T06:21:41Z ERROR checkout-service downstream timeout calling promotions service",
+    "2026-02-28T06:22:19Z INFO checkout-service query count for order_summary increased 4.1x",
+    "2026-02-28T06:23:02Z WARN checkout-service p99 latency is 6210ms"
+  ],
+  "metrics": {
+    "p95_latency_ms": "2840",
+    "p99_latency_ms": "6210",
+    "error_rate": "0.034"
+  },
+  "deploys": [
+    {
+      "version": "checkout-service-2026.02.28-rc2",
+      "time": "2026-02-28T06:10:00Z"
+    }
+  ]
+}
