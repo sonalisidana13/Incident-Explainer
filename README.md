@@ -64,3 +64,33 @@ Optional filters:
 ```bash
 curl "http://localhost:8080/kb/search?q=consumer%20lag&k=5&kind=runbooks&service=notification-service"
 ```
+
+## Incident Explain Endpoint
+Deterministic MVP endpoint (no external LLM) using alert keywords, optional logs/metrics/deploys,
+and KB retrieval heuristics.
+
+```bash
+curl -X POST "http://localhost:8080/incident/explain" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "alert": {
+      "name": "High 5xx rate",
+      "service": "auth-service",
+      "env": "prod",
+      "startTime": "2026-02-28T02:10:00Z",
+      "endTime": "2026-02-28T02:20:00Z",
+      "description": "Login API 5xx and timeout errors are elevated"
+    },
+    "logs": [
+      "Timeout waiting for idle object in db pool",
+      "POST /auth/login returned 503"
+    ],
+    "metrics": {
+      "p95_latency_ms": "2100",
+      "error_rate": "0.12"
+    },
+    "deploys": [
+      { "version": "auth-service-1.18.4", "time": "2026-02-28T02:05:00Z" }
+    ]
+  }'
+```
