@@ -36,8 +36,8 @@ Environment variables used by API/Flyway (defaults shown):
 
 ## Ingest Knowledge Base
 The Java CLI `KbIngestor` reads all markdown files under `data/knowledge_base`, creates one
-`documents` row per file, chunks text (~800-1200 chars, 200 overlap), generates deterministic
-384-dim placeholder embeddings, and inserts into `chunks` with metadata.
+`documents` row per file, chunks text (~800-1200 chars, 200 overlap), generates 384-dim
+embeddings via the configured embedding provider, and inserts into `chunks` with metadata.
 
 Run ingestion:
 
@@ -52,8 +52,8 @@ KB_ROOT=/absolute/path/to/data/knowledge_base gradle :apps:api:ingestKnowledgeBa
 ```
 
 ## Debug KB Retrieval
-Vector search endpoint (pgvector cosine distance) using the same 384-dim deterministic embedding
-function used by ingestion:
+Vector search endpoint (pgvector cosine distance) using the same configured embedding provider
+used by ingestion:
 
 ```bash
 curl "http://localhost:8080/kb/search?q=database%20pool%20timeouts&k=5"
@@ -117,3 +117,26 @@ for f in data/incidents/*.json; do
   echo
 done
 ```
+
+## Provider Configuration
+Provider abstraction is controlled by environment flags:
+
+- `EMBEDDING_PROVIDER=fake|openai` (default: `fake`)
+- `LLM_PROVIDER=heuristic|openai` (default: `heuristic`)
+
+Run with defaults (fully implemented, deterministic):
+
+```bash
+EMBEDDING_PROVIDER=fake LLM_PROVIDER=heuristic gradle :apps:api:bootRun
+```
+
+Switch to OpenAI skeleton providers:
+
+```bash
+EMBEDDING_PROVIDER=openai LLM_PROVIDER=openai gradle :apps:api:bootRun
+```
+
+Notes:
+- `FakeEmbeddingProvider` is fully implemented and stable for local MVP use.
+- `NoopHeuristicExplainer` is fully implemented and does not call external LLMs.
+- `OpenAiEmbeddingProvider` and `OpenAiLlmProvider` are class skeletons with TODOs and method signatures only; they currently throw `UnsupportedOperationException` until implemented.

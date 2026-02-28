@@ -5,13 +5,17 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.stereotype.Component;
 
-@Component
-public class DeterministicEmbeddingService {
+public class FakeEmbeddingProvider implements EmbeddingProvider {
 
     public static final int DIM = 384;
 
+    @Override
+    public int dimensions() {
+        return DIM;
+    }
+
+    @Override
     public float[] embed(String text) {
         float[] vector = new float[DIM];
         List<String> tokens = tokenize(text);
@@ -36,19 +40,6 @@ public class DeterministicEmbeddingService {
 
         normalize(vector);
         return vector;
-    }
-
-    public String toVectorLiteral(float[] vector) {
-        StringBuilder sb = new StringBuilder();
-        sb.append('[');
-        for (int i = 0; i < vector.length; i++) {
-            if (i > 0) {
-                sb.append(',');
-            }
-            sb.append(vector[i]);
-        }
-        sb.append(']');
-        return sb.toString();
     }
 
     private List<String> tokenize(String text) {

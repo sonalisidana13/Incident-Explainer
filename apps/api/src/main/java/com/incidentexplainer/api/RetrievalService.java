@@ -9,14 +9,14 @@ public class RetrievalService {
     private static final int DEFAULT_K = 5;
     private static final int MAX_K = 50;
 
-    private final DeterministicEmbeddingService embeddingService;
+    private final EmbeddingProvider embeddingProvider;
     private final KbSearchRepository kbSearchRepository;
 
     public RetrievalService(
-        DeterministicEmbeddingService embeddingService,
+        EmbeddingProvider embeddingProvider,
         KbSearchRepository kbSearchRepository
     ) {
-        this.embeddingService = embeddingService;
+        this.embeddingProvider = embeddingProvider;
         this.kbSearchRepository = kbSearchRepository;
     }
 
@@ -42,8 +42,8 @@ public class RetrievalService {
         String normalizedKind = normalize(kind);
         String normalizedService = normalize(service);
 
-        float[] embedding = embeddingService.embed(query);
-        String queryVectorLiteral = embeddingService.toVectorLiteral(embedding);
+        float[] embedding = embeddingProvider.embed(query);
+        String queryVectorLiteral = embeddingProvider.toVectorLiteral(embedding);
 
         return kbSearchRepository.searchDetailed(queryVectorLiteral, effectiveK, normalizedKind, normalizedService);
     }

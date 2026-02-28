@@ -28,16 +28,16 @@ public class KbIngestor {
 
     private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
-    private final DeterministicEmbeddingService embeddingService;
+    private final EmbeddingProvider embeddingProvider;
 
     public KbIngestor(
         JdbcTemplate jdbcTemplate,
         ObjectMapper objectMapper,
-        DeterministicEmbeddingService embeddingService
+        EmbeddingProvider embeddingProvider
     ) {
         this.jdbcTemplate = jdbcTemplate;
         this.objectMapper = objectMapper;
-        this.embeddingService = embeddingService;
+        this.embeddingProvider = embeddingProvider;
     }
 
     public void run() {
@@ -118,8 +118,8 @@ public class KbIngestor {
             }
 
             String metadataJson = toJson(metadata);
-            float[] embedding = embeddingService.embed(chunkText);
-            String vectorLiteral = embeddingService.toVectorLiteral(embedding);
+            float[] embedding = embeddingProvider.embed(chunkText);
+            String vectorLiteral = embeddingProvider.toVectorLiteral(embedding);
 
             jdbcTemplate.update(
                 """
