@@ -21,6 +21,19 @@ public class RetrievalService {
     }
 
     public List<KbSearchResult> search(String query, Integer k, String kind, String service) {
+        List<RetrievedChunk> detailed = searchDetailed(query, k, kind, service);
+        return detailed.stream()
+            .map(chunk -> new KbSearchResult(
+                chunk.chunkId(),
+                chunk.text(),
+                chunk.metadata(),
+                chunk.documentTitle(),
+                chunk.documentSource()
+            ))
+            .toList();
+    }
+
+    public List<RetrievedChunk> searchDetailed(String query, Integer k, String kind, String service) {
         if (query == null || query.isBlank()) {
             throw new IllegalArgumentException("query must not be blank");
         }
@@ -32,7 +45,7 @@ public class RetrievalService {
         float[] embedding = embeddingService.embed(query);
         String queryVectorLiteral = embeddingService.toVectorLiteral(embedding);
 
-        return kbSearchRepository.search(queryVectorLiteral, effectiveK, normalizedKind, normalizedService);
+        return kbSearchRepository.searchDetailed(queryVectorLiteral, effectiveK, normalizedKind, normalizedService);
     }
 
     private int resolveK(Integer k) {

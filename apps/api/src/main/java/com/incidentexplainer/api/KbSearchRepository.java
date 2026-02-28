@@ -20,13 +20,26 @@ public class KbSearchRepository {
     }
 
     public List<KbSearchResult> search(String queryVectorLiteral, int k, String kind, String service) {
+        return searchDetailed(queryVectorLiteral, k, kind, service).stream()
+            .map(chunk -> new KbSearchResult(
+                chunk.chunkId(),
+                chunk.text(),
+                chunk.metadata(),
+                chunk.documentTitle(),
+                chunk.documentSource()
+            ))
+            .toList();
+    }
+
+    public List<RetrievedChunk> searchDetailed(String queryVectorLiteral, int k, String kind, String service) {
         StringBuilder sql = new StringBuilder(
             """
             SELECT c.id AS chunk_id,
                    c.text AS chunk_text,
                    c.metadata AS chunk_metadata,
                    d.title AS document_title,
-                   d.source AS document_source
+                   d.source AS document_source,
+                   (c.embedding <=> ?::vector) AS distance
             FROM chunks c
             JOIN documents d ON d.id = c.doc_id
             WHERE c.embedding IS NOT NULL
@@ -34,6 +47,7 @@ public class KbSearchRepository {
         );
 
         List<Object> params = new ArrayList<>();
+        params.add(queryVectorLiteral);
 
         if (hasText(kind)) {
             sql.append(" AND c.metadata->>'kind' = ?");
@@ -49,15 +63,17 @@ public class KbSearchRepository {
         params.add(queryVectorLiteral);
         params.add(k);
 
-        return jdbcTemplate.query(sql.toString(), params.toArray(), (rs, rowNum) ->
-            new KbSearchResult(
+        return jdbcTemplate.query(sql.toString(), params.toArray(), (rs, rowNum) -> {
+            double distance = rs.getDouble("distance");
+            return new RetrievedChunk(
                 rs.getLong("chunk_id"),
                 rs.getString("chunk_text"),
                 parseMetadata(rs.getObject("chunk_metadata")),
                 rs.getString("document_title"),
-                rs.getString("document_source")
-            )
-        );
+                rs.getString("document_source"),
+                toScore(distance)
+            );
+        });
     }
 
     private Map<String, Object> parseMetadata(Object rawValue) {
@@ -79,5 +95,9 @@ public class KbSearchRepository {
 
     private boolean hasText(String value) {
         return value != null && !value.isBlank();
+    }
+
+    private double toScore(double distance) {
+        return Math.max(0.0, Math.min(1.0, 1.0 - distance));
     }
 }
