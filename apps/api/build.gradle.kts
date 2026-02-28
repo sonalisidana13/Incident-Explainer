@@ -26,6 +26,14 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+tasks.register<JavaExec>("ingestKnowledgeBase") {
+    group = "application"
+    description = "Runs KbIngestor to load markdown knowledge base files into Postgres."
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("com.incidentexplainer.api.KbIngestorApplication")
+    workingDir = rootProject.rootDir
+}
+
 flyway {
     url = System.getenv("DB_URL") ?: "jdbc:postgresql://localhost:5432/incident_explainer"
     user = System.getenv("DB_USER") ?: "incident_explainer"
