@@ -8,9 +8,13 @@
 .gradle/
 build/
 **/build/
+target/
+**/target/
 
 # Node (web app scaffold if present)
 node_modules/
+package-lock.json
+**/package-lock.json
 
 # Logs
 *.log

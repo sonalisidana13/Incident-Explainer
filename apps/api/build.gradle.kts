@@ -2,8 +2,10 @@ plugins {
     java
     id("org.springframework.boot") version "3.3.5"
     id("io.spring.dependency-management") version "1.1.6"
-    id("org.flywaydb.flyway") version "10.20.1"
+    id("org.flywaydb.flyway") version "11.20.3"
 }
+
+extra["flyway.version"] = "11.20.3"
 
 java {
     toolchain {
@@ -16,6 +18,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-database-postgresql")
 
     runtimeOnly("org.postgresql:postgresql")
 

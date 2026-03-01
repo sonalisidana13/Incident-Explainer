@@ -4,6 +4,9 @@ Multi-module scaffold with:
 - `apps/api`: Spring Boot 3 (Java 17), Gradle Kotlin DSL, Web + Validation + JDBC + Flyway
 - `infra/docker-compose.yml`: Postgres with pgvector
 
+Easy guide: `docs/START_HERE.md`
+Full beginner architecture guide: `docs/PROJECT_GUIDE.md`
+
 ## Start Postgres
 
 ```bash
@@ -29,10 +32,14 @@ Flyway migrations are auto-run on API startup. To run explicitly:
 gradle :apps:api:flywayMigrate
 ```
 
-Environment variables used by API/Flyway (defaults shown):
-- `SPRING_DATASOURCE_URL` / `DB_URL`: `jdbc:postgresql://localhost:5432/incident_explainer`
-- `SPRING_DATASOURCE_USERNAME` / `DB_USER`: `incident_explainer`
-- `SPRING_DATASOURCE_PASSWORD` / `DB_PASSWORD`: `incident_explainer`
+Database config is already set in:
+- `apps/api/src/main/resources/application.yml`
+- `apps/api/src/main/resources/application.properties`
+
+Current local defaults:
+- URL: `jdbc:postgresql://localhost:5432/incident_explainer`
+- Username: `incident_explainer`
+- Password: `incident_explainer`
 
 ## Ingest Knowledge Base
 The Java CLI `KbIngestor` reads all markdown files under `data/knowledge_base`, creates one
@@ -119,22 +126,21 @@ done
 ```
 
 ## Provider Configuration
-Provider abstraction is controlled by environment flags:
+Provider abstraction is configured in app properties:
+- `embedding.provider=fake|openai`
+- `llm.provider=heuristic|openai`
 
-- `EMBEDDING_PROVIDER=fake|openai` (default: `fake`)
-- `LLM_PROVIDER=heuristic|openai` (default: `heuristic`)
+Current local defaults (already set):
+- `embedding.provider=fake`
+- `llm.provider=heuristic`
 
-Run with defaults (fully implemented, deterministic):
+To switch providers, edit either:
+- `apps/api/src/main/resources/application.yml`, or
+- `apps/api/src/main/resources/application.properties`
 
-```bash
-EMBEDDING_PROVIDER=fake LLM_PROVIDER=heuristic gradle :apps:api:bootRun
-```
-
-Switch to OpenAI skeleton providers:
-
-```bash
-EMBEDDING_PROVIDER=openai LLM_PROVIDER=openai gradle :apps:api:bootRun
-```
+You can still override with env vars if needed later:
+- `EMBEDDING_PROVIDER`
+- `LLM_PROVIDER`
 
 Notes:
 - `FakeEmbeddingProvider` is fully implemented and stable for local MVP use.
